@@ -1,48 +1,61 @@
 # 🎲 Dice Roller for Gemini Chat
 
-A Chrome extension that adds dice rolling functionality to Google Gemini Chat with beautiful animations and advanced features.
+[Português](README.pt-BR.md) | **English**
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+A Chrome extension that adds advanced dice rolling functionality to Google Gemini Chat with beautiful animations and RPG-focused features.
+
+![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Chrome](https://img.shields.io/badge/chrome-extension-orange.svg)
 
 ## ✨ Features
 
 ### 🎯 Core Features
-- **Integrated Button**: Seamlessly integrated dice button in Gemini Chat interface
-- **Dual Dice Rolling**: Roll two different dice simultaneously (e.g., 1d20 + 1d8)
+- **8 Simultaneous Dice**: Roll up to 8 different dice at once
+- **Player vs NPC System**: 4 dice for players (with modifiers) + 4 dice for NPCs
 - **Multiple Formats**: Support for various dice formats (1d20, 2d6, 3d8+5, etc.)
-- **Animated Results**: Beautiful 2D animations showing dice rolling
+- **Complex Expressions**: Roll multiple dice types in one expression (1d20+2d6+5)
 - **Auto-Insert**: Automatically insert results into chat and send
+- **Clear All Button**: Quickly clear all 8 dice fields at once
 
 ### 🎮 Advanced Mechanics
 - **Advantage/Disadvantage**: D&D 5e style advantage and disadvantage rolls
-- **Lucky Die Mode**: Guarantees results in the top 70% range (7-10 on d10, 14-20 on d20)
+- **Lucky Die Mode** 🍀: Guarantees results in the top 70% range (Player dice only)
+- **Unlucky Die Mode** 💀: Guarantees results in the bottom 30% range (Player dice only)
 - **Modifiers**: Support for positive and negative modifiers (+5, -2, etc.)
 - **Secure Random**: Uses Web Crypto API for cryptographically secure random numbers
 
+### 👤 Player Dice (1-4)
+- Full modifier support (Lucky/Unlucky)
+- Advantage/Disadvantage/Normal roll types
+- Color-coded: Blue, Red, Green, Purple
+
+### 🎭 NPC Dice (5-8)
+- Advantage/Disadvantage/Normal roll types only
+- No Lucky/Unlucky modifiers
+- Color-coded: Red, Yellow, Orange, Brown
+- Perfect for enemy/NPC rolls
+
 ### 🌍 Internationalization
-- **Bilingual Support**: Full support for Portuguese (PT-BR) and English (EN-US)
-- **Dynamic Language Switching**: Change language on-the-fly with page reload
-- **Translated Output**: Dice results are formatted in the selected language
+- **Bilingual Support**: Full support for English (EN-US) and Portuguese (PT-BR)
+- **Dynamic Language Switching**: Change language on-the-fly
+- **Persistent Settings**: Language preference saved in localStorage
+- **Default Language**: English (EN-US)
 
 ### 🎨 User Interface
 - **Material Design**: Follows Google's Material Design guidelines
 - **Dark Theme Compatible**: Matches Gemini's dark theme
 - **Responsive**: Works on all screen sizes
-- **Accessible**: Keyboard navigation and screen reader support
+- **Organized Layout**: Player and NPC dice in separate sections
 
 ## 📦 Installation
-
-### From Chrome Web Store
-*Coming soon*
 
 ### Manual Installation (Developer Mode)
 
 1. **Download the Extension**
    ```bash
-   git clone https://github.com/yourusername/dice-roller-gemini.git
-   cd dice-roller-gemini
+   git clone https://github.com/srmooon/extension-dice-roller-gemini.git
+   cd extension-dice-roller-gemini
    ```
 
 2. **Load in Chrome**
@@ -53,7 +66,7 @@ A Chrome extension that adds dice rolling functionality to Google Gemini Chat wi
 
 3. **Start Using**
    - Go to [gemini.google.com](https://gemini.google.com)
-   - Look for the 🎲 Dice button next to the Tools button
+   - Look for the 🎲 Dice button next to the chat input
    - Click and start rolling!
 
 ## 🎲 How to Use
@@ -61,9 +74,11 @@ A Chrome extension that adds dice rolling functionality to Google Gemini Chat wi
 ### Basic Rolling
 
 1. Click the 🎲 **Dice** button in Gemini Chat
-2. Enter your dice format (e.g., `1d20`, `2d6+3`)
-3. Click **Roll Dice**
-4. Result is automatically inserted into chat
+2. Enter your dice format in any of the 8 fields
+3. Select roll type (Normal/Advantage/Disadvantage)
+4. For Player dice: optionally select Lucky/Unlucky modifier
+5. Click **Roll Dice**
+6. Results are automatically inserted into chat
 
 ### Dice Format Examples
 
@@ -74,47 +89,47 @@ A Chrome extension that adds dice rolling functionality to Google Gemini Chat wi
 | `3d8+5` | Roll three 8-sided dice and add 5 |
 | `1d12-2` | Roll one 12-sided die and subtract 2 |
 | `4d6` | Roll four 6-sided dice |
-| `1d8+2d6` | Roll 1d8 and 2d6, sum all results |
-| `1d20 + 1d6 + 3` | Roll 1d20, 1d6, and add 3 (with spaces) |
+| `1d20+2d6+3` | Roll 1d20, 2d6, and add 3 |
 | `3d6+2d8+5` | Roll 3d6, 2d8, and add 5 |
-| `200d6` | Roll 200 six-sided dice |
 
 ### Advanced Features
 
-#### Two Dice at Once
-- **First Die**: `1d20` (attack roll)
-- **Second Die**: `1d8` (damage roll)
-- Both results appear in chat
+#### Multiple Dice Rolling
+- **Die 1-4 (Player)**: With Lucky/Unlucky modifiers
+- **Die 5-8 (NPC)**: Without special modifiers
+- Roll any combination simultaneously
+- Results are grouped by category (PLAYER/NPC)
 
-#### Advantage/Disadvantage
+#### Roll Types
 - **Normal**: Standard roll
-- **Advantage**: Roll 2 dice, take the higher
-- **Disadvantage**: Roll 2 dice, take the lower
+- **Advantage**: Roll 2 dice per die, take the higher
+- **Disadvantage**: Roll 2 dice per die, take the lower
 
-#### Lucky Die Mode 🍀
-- Activate "Lucky Die" checkbox
-- Guarantees results in top 70% range
-- Works with all dice types
-- Example: 1d10 always rolls 7-10
+#### Modifiers (Player Dice Only)
+- **None**: Standard roll
+- **Lucky** 🍀: Guarantees results in top 70% range
+- **Unlucky** 💀: Guarantees results in bottom 30% range
 
 ### Language Selection
 
 1. Open the dice roller popup
 2. Scroll to the bottom
-3. Select your language (PT-BR or EN-US)
+3. Select your language (EN-US or PT-BR)
 4. Click "Reload Page" to apply changes
+5. Language preference is saved automatically
 
 ## 🛠️ Technical Details
 
 ### Supported Dice
-- **Sides**: 2 to unlimited sides
-- **Quantity**: 1 to unlimited dice per roll
-- **Modifiers**: unlimited
-- **Spaces**: Accepts spaces in format (e.g., `1d20 + 1d6`)
+- **Sides**: 2 to 100 sides
+- **Quantity**: 1 to 200 dice per roll
+- **Modifiers**: Unlimited
+- **Complex Expressions**: Multiple dice types in one roll
 
 ### Random Number Generation
 - **Primary**: Web Crypto API (cryptographically secure)
 - **Fallback**: Math.random() (if Crypto API unavailable)
+- **Lucky/Unlucky**: Re-roll mechanism for guaranteed ranges
 
 ### Browser Compatibility
 - Chrome 88+
@@ -124,7 +139,7 @@ A Chrome extension that adds dice rolling functionality to Google Gemini Chat wi
 ## 📁 Project Structure
 
 ```
-dice-roller-gemini/
+extension-dice-roller-gemini/
 ├── manifest.json           # Extension manifest
 ├── content-script.js       # Main content script
 ├── utils/
@@ -140,40 +155,48 @@ dice-roller-gemini/
 │   └── dice-popup.css     # Popup styles
 ├── styles/
 │   └── dice-button.css    # Button styles
-├── 3d-animation/
-│   ├── dice-models.js     # 3D dice models
-│   └── dice-renderer.js   # 3D rendering
 ├── assets/
 │   └── icons/             # Extension icons
-└── tests/
-    └── lucky-dice-verification.html # Testing page
+└── tests/                 # Test files
 ```
 
 ## 🎯 Features in Detail
 
-### Lucky Die System
-The Lucky Die feature uses a re-roll mechanism to guarantee favorable results:
+### Lucky/Unlucky System
+The modifier system uses a re-roll mechanism:
 
-```javascript
-// For 1d10: Guarantees 7-10
-// For 1d20: Guarantees 14-20
-// For 1d6: Guarantees 5-6
-```
+**Lucky Die** 🍀:
+- d6: Guarantees 5-6
+- d10: Guarantees 7-10
+- d20: Guarantees 14-20
+- Other dice: Top 70% range
 
-The system calculates 70% of the maximum value and re-rolls until achieving a result in that range.
+**Unlucky Die** 💀:
+- d6: Guarantees 1-3
+- d10: Guarantees 1-3
+- d20: Guarantees 1-6
+- Other dice: Bottom 30% range
 
 ### Output Format
 
-**Portuguese (PT-BR):**
-```
-🎲 1d20 ➜ RESULTADO: 18
-📊 Detalhes: [18]
-```
-
 **English (EN-US):**
 ```
-🎲 1d20 ➜ RESULT: 18
-📊 Details: [18]
+👤 PLAYER
+🎲 Die 1: 1d20 ➜ 18 (Advantage)
+🎲 Die 2: 2d6+3 ➜ 11 🍀
+
+🎭 NPC
+🎲 Die 5: 1d20 ➜ 12
+```
+
+**Portuguese (PT-BR):**
+```
+👤 PLAYER
+🎲 Dado 1: 1d20 ➜ 18 (Vantagem)
+🎲 Dado 2: 2d6+3 ➜ 11 🍀
+
+🎭 NPC
+🎲 Dado 5: 1d20 ➜ 12
 ```
 
 ## 🤝 Contributing
@@ -187,49 +210,24 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Test in Chrome (Developer Mode)
 4. Submit a PR with a clear description
 
-### Code Style
-- Use ES6+ features
-- Follow existing code structure
-- Add comments for complex logic
-- Test all features before submitting
-
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🐛 Bug Reports
+## 🐛 Bug Reports & Feature Requests
 
-Found a bug? Please open an issue on GitHub with:
-- Description of the bug
-- Steps to reproduce
-- Expected behavior
-- Screenshots (if applicable)
-- Browser version
-
-## 💡 Feature Requests
-
-Have an idea? Open an issue with the "enhancement" label and describe:
-- The feature you'd like
-- Why it would be useful
-- How it should work
+- **Issues**: [GitHub Issues](https://github.com/srmooon/extension-dice-roller-gemini/issues)
 
 ## 📧 Contact
 
-- **GitHub**: [Your GitHub Profile](https://github.com/yourusername)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/dice-roller-gemini/issues)
+- **GitHub**: [@srmooon](https://github.com/srmooon)
+- **Repository**: [extension-dice-roller-gemini](https://github.com/srmooon/extension-dice-roller-gemini)
 
 ## 🙏 Acknowledgments
 
 - Google Gemini for the amazing AI chat platform
 - Material Design for the design guidelines
-- The RPG community for inspiration
-
-## 📊 Stats
-
-- **Lines of Code**: ~3,000+
-- **Files**: 20+
-- **Languages**: JavaScript, CSS, HTML
-- **Supported Languages**: Portuguese, English
+- The RPG and D&D community for inspiration
 
 ---
 

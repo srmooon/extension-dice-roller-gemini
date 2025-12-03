@@ -160,9 +160,9 @@ class I18n {
     loadLanguage() {
         try {
             const saved = localStorage.getItem('diceRollerLanguage');
-            return saved || 'pt-BR';
+            return saved || 'en-US';
         } catch (error) {
-            return 'pt-BR';
+            return 'en-US';
         }
     }
 
