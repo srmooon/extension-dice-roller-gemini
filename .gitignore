@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+.cursor/
+.kiro/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+debug.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment
+.env
+.env.local
+
+# Build
+dist/
+build/
+
+# Test files (keep in repo but ignore if generated)
+# tests/
+
+# Documentation (development only)
+*.draft.md
+NOTES.md

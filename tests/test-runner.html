@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dice Roller Extension - Test Suite</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-header {
+            background: #4285f4;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+        .test-result {
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .test-pass {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .test-fail {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-summary {
+            background: #e2e3e5;
+            color: #383d41;
+            border: 1px solid #d6d8db;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .run-tests-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .run-tests-btn:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎲 Dice Roller Extension - Test Suite</h1>
+    
+    <button class="run-tests-btn" onclick="runAllTests()">Executar Todos os Testes</button>
+    
+    <div id="test-results"></div>
+
+    
+    <script src="../utils/dice-parser.js"></script>
+    <script src="../utils/random-generator.js"></script>
+    <script src="../utils/error-handler.js"></script>
+    <script src="../utils/roll-engine.js"></script>
+    <script src="../utils/fallback-manager.js"></script>
+    
+    
+    <script src="dice-parser.test.js"></script>
+    <script src="random-generator.test.js"></script>
+    <script src="roll-engine.test.js"></script>
+    <script src="fallback-manager.test.js"></script>
+    <script src="integration.test.js"></script>
+    <script src="lucky-dice.test.js"></script>
+    
+    <script>
+        // Simple test framework
+        class TestFramework {
+            constructor() {
+                this.tests = [];
+                this.results = [];
+            }
+            
+            describe(suiteName, testFunction) {
+                const suite = {
+                    name: suiteName,
+                    tests: [],
+                    beforeEach: null,
+                    afterEach: null
+                };
+                
+                const context = {
+                    it: (testName, testFn) => {
+                        suite.tests.push({ name: testName, fn: testFn });
+                    },
+                    beforeEach: (fn) => {
+                        suite.beforeEach = fn;
+                    },
+                    afterEach: (fn) => {
+                        suite.afterEach = fn;
+                    }
+                };
+                
+                testFunction(context);
+                this.tests.push(suite);
+            }
+            
+            async runTests() {
+                this.results = [];
+                const resultsContainer = document.getElementById('test-results');
+                resultsContainer.innerHTML = '';
+                
+                let totalTests = 0;
+                let passedTests = 0;
+                
+                for (const suite of this.tests) {
+                    const suiteContainer = document.createElement('div');
+                    suiteContainer.className = 'test-container';
+                    suiteContainer.innerHTML = `<div class="test-header">${suite.name}</div>`;
+                    
+                    for (const test of suite.tests) {
+                        totalTests++;
+                        
+                        try {
+                            if (suite.beforeEach) {
+                                await suite.beforeEach();
+                            }
+                            
+                            await test.fn();
+                            
+                            if (suite.afterEach) {
+                                await suite.afterEach();
+                            }
+                            
+                            const resultDiv = document.createElement('div');
+                            resultDiv.className = 'test-result test-pass';
+                            resultDiv.textContent = `✓ ${test.name}`;
+                            suiteContainer.appendChild(resultDiv);
+                            
+                            passedTests++;
+                            
+                        } catch (error) {
+                            const resultDiv = document.createElement('div');
+                            resultDiv.className = 'test-result test-fail';
+                            resultDiv.textContent = `✗ ${test.name}: ${error.message}`;
+                            suiteContainer.appendChild(resultDiv);
+                        }
+                    }
+                    
+                    resultsContainer.appendChild(suiteContainer);
+                }
+                
+                // Add summary
+                const summaryDiv = document.createElement('div');
+                summaryDiv.className = 'test-summary';
+                summaryDiv.innerHTML = `
+                    <strong>Resumo dos Testes:</strong><br>
+                    Total: ${totalTests} | Passou: ${passedTests} | Falhou: ${totalTests - passedTests}<br>
+                    Taxa de Sucesso: ${((passedTests / totalTests) * 100).toFixed(1)}%
+                `;
+                resultsContainer.appendChild(summaryDiv);
+            }
+        }
+        
+        // Global test framework instance
+        const testFramework = new TestFramework();
+        
+        // Global test functions
+        function describe(suiteName, testFunction) {
+            testFramework.describe(suiteName, testFunction);
+        }
+        
+        function expect(actual) {
+            return {
+                toBe: (expected) => {
+                    if (actual !== expected) {
+                        throw new Error(`Expected ${expected}, but got ${actual}`);
+                    }
+                },
+                toEqual: (expected) => {
+                    if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+                        throw new Error(`Expected ${JSON.stringify(expected)}, but got ${JSON.stringify(actual)}`);
+                    }
+                },
+                toBeTruthy: () => {
+                    if (!actual) {
+                        throw new Error(`Expected truthy value, but got ${actual}`);
+                    }
+                },
+                toBeFalsy: () => {
+                    if (actual) {
+                        throw new Error(`Expected falsy value, but got ${actual}`);
+                    }
+                },
+                toBeNull: () => {
+                    if (actual !== null) {
+                        throw new Error(`Expected null, but got ${actual}`);
+                    }
+                },
+                toBeGreaterThan: (expected) => {
+                    if (actual <= expected) {
+                        throw new Error(`Expected ${actual} to be greater than ${expected}`);
+                    }
+                },
+                toBeLessThan: (expected) => {
+                    if (actual >= expected) {
+                        throw new Error(`Expected ${actual} to be less than ${expected}`);
+                    }
+                },
+                toContain: (expected) => {
+                    if (!actual.includes(expected)) {
+                        throw new Error(`Expected ${actual} to contain ${expected}`);
+                    }
+                },
+                toThrow: () => {
+                    let threw = false;
+                    try {
+                        actual();
+                    } catch (e) {
+                        threw = true;
+                    }
+                    if (!threw) {
+                        throw new Error('Expected function to throw an error');
+                    }
+                }
+            };
+        }
+        
+        async function runAllTests() {
+            await testFramework.runTests();
+        }
+        
+        // Auto-run tests when page loads
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 100);
+        });
+    </script>
+</body>
+</html>

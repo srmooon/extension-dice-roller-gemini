@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Nova UI - Controles Individuais</title>
+    <link rel="stylesheet" href="../popup/dice-popup.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 450px;
+            margin: 40px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .test-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #4285f4;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        
+        .info-box h3 {
+            margin: 0 0 10px 0;
+            color: #4285f4;
+        }
+        
+        .info-box ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .info-box li {
+            margin: 5px 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎲 Nova UI - Controles Individuais</h1>
+    
+    <div class="test-container">
+        <div class="info-box">
+            <h3>✨ Novidades:</h3>
+            <ul>
+                <li>Cada dado tem seus próprios controles</li>
+                <li>Vantagem/Desvantagem separados</li>
+                <li>Lucky/Unlucky separados</li>
+                <li>Configurações independentes</li>
+            </ul>
+        </div>
+        
+        
+        <div class="dice-config-section dice-1-section">
+            <h4 class="dice-section-title">🎲 Dado 1</h4>
+            
+            <div class="input-section">
+                <label for="dice-format">Formato:</label>
+                <input type="text" id="dice-format" placeholder="Ex: 3d6, 1d20+5" value="3d6" autocomplete="off">
+                <div class="format-examples">
+                    <span class="example" data-format="1d20">1d20</span>
+                    <span class="example" data-format="2d6">2d6</span>
+                    <span class="example" data-format="3d6">3d6</span>
+                    <span class="example" data-format="1d8+3">1d8+3</span>
+                </div>
+            </div>
+
+            <div class="roll-type-section">
+                <label>Tipo de Rolagem:</label>
+                <div class="roll-type-buttons">
+                    <button class="roll-type-btn active" data-type="normal" data-dice="1">Normal</button>
+                    <button class="roll-type-btn" data-type="advantage" data-dice="1">Vantagem</button>
+                    <button class="roll-type-btn" data-type="disadvantage" data-dice="1">Desvantagem</button>
+                </div>
+            </div>
+
+            <div class="modifier-section">
+                <label>Modificador:</label>
+                <div class="modifier-buttons">
+                    <button class="modifier-btn active" data-modifier="none" data-dice="1">Nenhum</button>
+                    <button class="modifier-btn" data-modifier="lucky" data-dice="1">🍀 Sortudo</button>
+                    <button class="modifier-btn" data-modifier="unlucky" data-dice="1">💀 Azarado</button>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="dice-config-section dice-2-section">
+            <h4 class="dice-section-title">🎲 Dado 2 (Opcional)</h4>
+            
+            <div class="input-section">
+                <label for="dice-format-2">Formato:</label>
+                <input type="text" id="dice-format-2" placeholder="Ex: 1d6, 1d4+2" value="1d20" autocomplete="off">
+                <div class="format-examples">
+                    <span class="example-2" data-format="1d6">1d6</span>
+                    <span class="example-2" data-format="1d4">1d4</span>
+                    <span class="example-2" data-format="1d8">1d8</span>
+                    <span class="example-2" data-format="1d20">1d20</span>
+                </div>
+            </div>
+
+            <div class="roll-type-section">
+                <label>Tipo de Rolagem:</label>
+                <div class="roll-type-buttons">
+                    <button class="roll-type-btn active" data-type="normal" data-dice="2">Normal</button>
+                    <button class="roll-type-btn" data-type="advantage" data-dice="2">Vantagem</button>
+                    <button class="roll-type-btn" data-type="disadvantage" data-dice="2">Desvantagem</button>
+                </div>
+            </div>
+
+            <div class="modifier-section">
+                <label>Modificador:</label>
+                <div class="modifier-buttons">
+                    <button class="modifier-btn active" data-modifier="none" data-dice="2">Nenhum</button>
+                    <button class="modifier-btn" data-modifier="lucky" data-dice="2">🍀 Sortudo</button>
+                    <button class="modifier-btn" data-modifier="unlucky" data-dice="2">💀 Azarado</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+            <strong>Status Atual:</strong>
+            <div id="status" style="margin-top: 10px; font-family: monospace; font-size: 13px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Simula a lógica dos botões
+        const dice1State = { rollType: 'normal', modifier: 'none' };
+        const dice2State = { rollType: 'normal', modifier: 'none' };
+
+        function updateStatus() {
+            const dice1Format = document.getElementById('dice-format').value || 'não definido';
+            const dice2Format = document.getElementById('dice-format-2').value || 'não definido';
+            
+            const status = `
+                <strong>Dado 1:</strong> ${dice1Format}<br>
+                - Tipo: ${dice1State.rollType}<br>
+                - Modificador: ${dice1State.modifier}<br>
+                <br>
+                <strong>Dado 2:</strong> ${dice2Format}<br>
+                - Tipo: ${dice2State.rollType}<br>
+                - Modificador: ${dice2State.modifier}
+            `;
+            document.getElementById('status').innerHTML = status;
+        }
+
+        // Roll type buttons
+        document.querySelectorAll('.roll-type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const diceNum = btn.dataset.dice;
+                const type = btn.dataset.type;
+                
+                // Atualiza estado
+                if (diceNum === '1') {
+                    dice1State.rollType = type;
+                } else {
+                    dice2State.rollType = type;
+                }
+                
+                // Atualiza UI
+                document.querySelectorAll(`.roll-type-btn[data-dice="${diceNum}"]`).forEach(b => {
+                    b.classList.toggle('active', b.dataset.type === type);
+                });
+                
+                updateStatus();
+            });
+        });
+
+        // Modifier buttons
+        document.querySelectorAll('.modifier-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const diceNum = btn.dataset.dice;
+                const modifier = btn.dataset.modifier;
+                
+                // Atualiza estado
+                if (diceNum === '1') {
+                    dice1State.modifier = modifier;
+                } else {
+                    dice2State.modifier = modifier;
+                }
+                
+                // Atualiza UI
+                document.querySelectorAll(`.modifier-btn[data-dice="${diceNum}"]`).forEach(b => {
+                    b.classList.toggle('active', b.dataset.modifier === modifier);
+                });
+                
+                updateStatus();
+            });
+        });
+
+        // Input changes
+        document.getElementById('dice-format').addEventListener('input', updateStatus);
+        document.getElementById('dice-format-2').addEventListener('input', updateStatus);
+
+        // Status inicial
+        updateStatus();
+    </script>
+</body>
+</html>

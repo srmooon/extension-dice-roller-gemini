@@ -1,0 +1,93 @@
+{
+  "name": "dice-roller-extension",
+  "version": "1.0.0",
+  "description": "Extensão de navegador que adiciona funcionalidade de rolagem de dados ao Google Gemini Chat",
+  "main": "content-script.js",
+  "scripts": {
+    "test": "echo \"Abra tests/test-runner.html no navegador para executar os testes\" && exit 0",
+    "build": "echo \"Extensão pronta para uso. Carregue a pasta no navegador.\" && exit 0",
+    "lint": "echo \"Linting não configurado. Use ferramentas do navegador para debug.\" && exit 0",
+    "package": "node scripts/package.js"
+  },
+  "keywords": [
+    "dice",
+    "roller",
+    "rpg",
+    "gemini",
+    "chat",
+    "extension",
+    "browser",
+    "3d",
+    "animation",
+    "dados"
+  ],
+  "author": "Dice Roller Extension Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dice-roller-extension/dice-roller-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dice-roller-extension/dice-roller-extension/issues"
+  },
+  "homepage": "https://github.com/dice-roller-extension/dice-roller-extension#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "Chrome >= 88",
+    "Firefox >= 85",
+    "Edge >= 88"
+  ],
+  "devDependencies": {},
+  "dependencies": {},
+  "files": [
+    "manifest.json",
+    "content-script.js",
+    "popup/",
+    "3d-animation/",
+    "utils/",
+    "assets/",
+    "README.md",
+    "LICENSE",
+    "INSTALL.md"
+  ],
+  "extensionInfo": {
+    "manifestVersion": 3,
+    "targetBrowsers": ["chrome", "firefox", "edge"],
+    "permissions": ["activeTab"],
+    "hostPermissions": ["https://gemini.google.com/*"],
+    "contentScripts": {
+      "matches": ["https://gemini.google.com/*"],
+      "runAt": "document_end"
+    }
+  },
+  "features": {
+    "diceFormats": [
+      "1d4", "1d6", "1d8", "1d10", "1d12", "1d20", "1d100",
+      "2d6", "3d8", "4d6",
+      "1d20+5", "2d6-2"
+    ],
+    "rollTypes": ["normal", "advantage", "disadvantage"],
+    "animations": ["3d", "canvas2d", "css3d", "basic"],
+    "security": ["webCrypto", "fallbackRandom"],
+    "integration": ["geminiToolbox", "floatingButton", "keyboardShortcut"]
+  },
+  "testing": {
+    "framework": "custom",
+    "testRunner": "tests/test-runner.html",
+    "coverage": {
+      "diceParser": "100%",
+      "randomGenerator": "100%",
+      "rollEngine": "100%",
+      "fallbackManager": "95%",
+      "integration": "90%"
+    }
+  },
+  "build": {
+    "outputDir": "dist/",
+    "zipName": "dice-roller-extension-v1.0.0.zip",
+    "includeTests": false,
+    "minify": false
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "Dice Roller for Gemini Chat",
+  "version": "1.0.0",
+  "description": "Adiciona funcionalidade de rolagem de dados ao Gemini Chat com animações 3D",
+  
+  "permissions": [
+    "activeTab",
+    "tabs"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": [
+        "utils/i18n.js",
+        "utils/dice-parser.js",
+        "utils/random-generator.js",
+        "utils/error-handler.js",
+        "utils/roll-engine.js",
+        "utils/fallback-manager.js",
+        "utils/gemini-injector.js",
+        "3d-animation/dice-models.js",
+        "3d-animation/dice-renderer.js",
+        "popup/dice-popup.js",
+        "content-script.js"
+      ],
+      "css": [
+        "popup/dice-popup.css",
+        "styles/dice-button.css"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "popup/dice-popup.html",
+        "assets/icons/*",
+        "assets/textures/*"
+      ],
+      "matches": ["https://gemini.google.com/*"]
+    }
+  ],
+  
+  "icons": {
+    "16": "assets/icons/dice-16.png",
+    "32": "assets/icons/dice-32.png", 
+    "48": "assets/icons/dice-48.png",
+    "128": "assets/icons/dice-128.png"
+  }
+}

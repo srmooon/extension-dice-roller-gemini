@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dice Roller</title>
+    <link rel="stylesheet" href="dice-popup.css">
+</head>
+<body>
+    <div id="dice-popup-overlay" class="popup-overlay hidden">
+        <div id="dice-popup-container" class="popup-container">
+            <div class="popup-header">
+                <h3>🎲 Rolar Dados</h3>
+                <button id="close-popup" class="close-button">&times;</button>
+            </div>
+            
+            <div class="popup-content">
+                
+                <div class="dice-config-section dice-1-section">
+                    <h4 class="dice-section-title">🎲 Dado 1</h4>
+                    
+                    <div class="input-section">
+                        <label for="dice-format">Formato:</label>
+                        <input type="text" id="dice-format" placeholder="Ex: 2d6, 1d20+5" autocomplete="off">
+                        <div class="format-examples">
+                            <span class="example" data-format="1d20">1d20</span>
+                            <span class="example" data-format="2d6">2d6</span>
+                            <span class="example" data-format="3d6">3d6</span>
+                            <span class="example" data-format="1d8+3">1d8+3</span>
+                        </div>
+                    </div>
+
+                    <div class="roll-type-section">
+                        <label>Tipo de Rolagem:</label>
+                        <div class="roll-type-buttons">
+                            <button class="roll-type-btn active" data-type="normal" data-dice="1">Normal</button>
+                            <button class="roll-type-btn" data-type="advantage" data-dice="1">Vantagem</button>
+                            <button class="roll-type-btn" data-type="disadvantage" data-dice="1">Desvantagem</button>
+                        </div>
+                    </div>
+
+                    <div class="modifier-section">
+                        <label>Modificador:</label>
+                        <div class="modifier-buttons">
+                            <button class="modifier-btn" data-modifier="none" data-dice="1">Nenhum</button>
+                            <button class="modifier-btn" data-modifier="lucky" data-dice="1">🍀 Sortudo</button>
+                            <button class="modifier-btn" data-modifier="unlucky" data-dice="1">💀 Azarado</button>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="dice-config-section dice-2-section">
+                    <h4 class="dice-section-title">🎲 Dado 2 (Opcional)</h4>
+                    
+                    <div class="input-section">
+                        <label for="dice-format-2">Formato:</label>
+                        <input type="text" id="dice-format-2" placeholder="Ex: 1d6, 1d4+2" autocomplete="off">
+                        <div class="format-examples">
+                            <span class="example-2" data-format="1d6">1d6</span>
+                            <span class="example-2" data-format="1d4">1d4</span>
+                            <span class="example-2" data-format="1d8">1d8</span>
+                            <span class="example-2" data-format="1d12">1d12</span>
+                        </div>
+                    </div>
+
+                    <div class="roll-type-section">
+                        <label>Tipo de Rolagem:</label>
+                        <div class="roll-type-buttons">
+                            <button class="roll-type-btn active" data-type="normal" data-dice="2">Normal</button>
+                            <button class="roll-type-btn" data-type="advantage" data-dice="2">Vantagem</button>
+                            <button class="roll-type-btn" data-type="disadvantage" data-dice="2">Desvantagem</button>
+                        </div>
+                    </div>
+
+                    <div class="modifier-section">
+                        <label>Modificador:</label>
+                        <div class="modifier-buttons">
+                            <button class="modifier-btn active" data-modifier="none" data-dice="2">Nenhum</button>
+                            <button class="modifier-btn" data-modifier="lucky" data-dice="2">🍀 Sortudo</button>
+                            <button class="modifier-btn" data-modifier="unlucky" data-dice="2">💀 Azarado</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="animation-section">
+                    <div id="dice-animation-container" class="animation-container">
+                        <div class="animation-placeholder">
+                            <div class="dice-icon">🎲</div>
+                            <p>Clique em "Rolar" para ver a animação</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-section hidden">
+                    <div class="result-display">
+                        <div class="result-number" id="result-number">0</div>
+                        <div class="result-explanation" id="result-explanation"></div>
+                    </div>
+                </div>
+
+                <div class="error-container" id="error-container">
+                    
+                </div>
+            </div>
+
+            <div class="popup-footer">
+                <div class="security-status" id="security-status">
+                    <small>Carregando...</small>
+                </div>
+                <div class="action-buttons">
+                    <button id="roll-dice" class="roll-button" disabled>Rolar Dados</button>
+                    <button id="insert-result" class="insert-button hidden" disabled>Inserir no Chat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Dado Sortudo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #357ae8;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success {
+            color: #34a853;
+            font-weight: bold;
+        }
+        .fail {
+            color: #ea4335;
+            font-weight: bold;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .stat-box {
+            background: #e8f0fe;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍀 Teste de Dado Sortudo</h1>
+    
+    <div class="test-container">
+        <h2>Teste Rápido</h2>
+        <p>Clique nos botões para testar se o dado sortudo está funcionando corretamente:</p>
+        <button onclick="testSingleRoll('1d10')">Testar 1d10</button>
+        <button onclick="testSingleRoll('1d20')">Testar 1d20</button>
+        <button onclick="testSingleRoll('2d10')">Testar 2d10</button>
+        <button onclick="testSingleRoll('3d6')">Testar 3d6</button>
+        <div id="quick-results" class="results"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Teste de Distribuição (100 rolagens)</h2>
+        <p>Verifica se TODOS os resultados estão nos 70% superiores:</p>
+        <button onclick="testDistribution('1d10', 100)">100x 1d10</button>
+        <button onclick="testDistribution('1d20', 100)">100x 1d20</button>
+        <button onclick="testDistribution('2d6', 100)">100x 2d6</button>
+        <div id="distribution-results" class="results"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>Teste com Vantagem/Desvantagem</h2>
+        <p>Verifica se o dado sortudo funciona com vantagem e desvantagem:</p>
+        <button onclick="testAdvantage('1d20', 20)">20x 1d20 Vantagem</button>
+        <button onclick="testDisadvantage('1d20', 20)">20x 1d20 Desvantagem</button>
+        <button onclick="testAdvantage('1d10', 20)">20x 1d10 Vantagem</button>
+        <button onclick="testDisadvantage('1d10', 20)">20x 1d10 Desvantagem</button>
+        <div id="advantage-results" class="results"></div>
+    </div>
+
+    <script src="../utils/random-generator.js"></script>
+    <script src="../utils/dice-parser.js"></script>
+    <script src="../utils/roll-engine.js"></script>
+
+    <script>
+        const rollEngine = new RollEngine();
+
+        function testSingleRoll(diceFormat) {
+            const resultsDiv = document.getElementById('quick-results');
+            const parsed = rollEngine.parser.parse(diceFormat);
+            
+            if (!parsed) {
+                resultsDiv.innerHTML = '<span class="fail">❌ Formato inválido!</span>';
+                return;
+            }
+
+            // Rola COM dado sortudo
+            const luckyResult = rollEngine.roll(diceFormat, 'normal', true);
+            
+            // Calcula o mínimo esperado (70% superior)
+            const minExpected = Math.ceil(parsed.sides * 0.7);
+            
+            // Verifica se TODOS os dados caíram na faixa esperada
+            const allGood = luckyResult.selectedRolls.every(roll => roll >= minExpected);
+            
+            let html = `<h3>Resultado: ${diceFormat} com Dado Sortudo 🍀</h3>`;
+            html += `<p><strong>Resultado Final:</strong> ${luckyResult.finalResult}</p>`;
+            html += `<p><strong>Dados Individuais:</strong> [${luckyResult.selectedRolls.join(', ')}]</p>`;
+            html += `<p><strong>Faixa Esperada:</strong> ${minExpected}-${parsed.sides} (70% superior)</p>`;
+            
+            if (allGood) {
+                html += `<p class="success">✅ SUCESSO! Todos os dados caíram na faixa esperada!</p>`;
+            } else {
+                html += `<p class="fail">❌ FALHA! Algum dado caiu fora da faixa esperada!</p>`;
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        function testDistribution(diceFormat, rolls) {
+            const resultsDiv = document.getElementById('distribution-results');
+            const parsed = rollEngine.parser.parse(diceFormat);
+            
+            if (!parsed) {
+                resultsDiv.innerHTML = '<span class="fail">❌ Formato inválido!</span>';
+                return;
+            }
+
+            resultsDiv.innerHTML = '<p>Testando... aguarde...</p>';
+
+            setTimeout(() => {
+                const minExpected = Math.ceil(parsed.sides * 0.7);
+                let successCount = 0;
+                let failCount = 0;
+                const allResults = [];
+                const distribution = {};
+
+                // Inicializa distribuição
+                for (let i = 1; i <= parsed.sides; i++) {
+                    distribution[i] = 0;
+                }
+
+                // Faz as rolagens
+                for (let i = 0; i < rolls; i++) {
+                    const result = rollEngine.roll(diceFormat, 'normal', true);
+                    allResults.push(result.selectedRolls);
+                    
+                    // Verifica se todos os dados estão na faixa
+                    const allGood = result.selectedRolls.every(roll => roll >= minExpected);
+                    if (allGood) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+
+                    // Conta distribuição (apenas para dados únicos)
+                    if (parsed.count === 1) {
+                        distribution[result.selectedRolls[0]]++;
+                    }
+                }
+
+                // Calcula estatísticas
+                const successRate = (successCount / rolls * 100).toFixed(1);
+                
+                let html = `<h3>Teste de ${rolls} rolagens: ${diceFormat} 🍀</h3>`;
+                html += `<div class="stats">`;
+                html += `<div class="stat-box"><strong>Sucessos:</strong> ${successCount}/${rolls}</div>`;
+                html += `<div class="stat-box"><strong>Falhas:</strong> ${failCount}/${rolls}</div>`;
+                html += `<div class="stat-box"><strong>Taxa de Sucesso:</strong> ${successRate}%</div>`;
+                html += `<div class="stat-box"><strong>Faixa Esperada:</strong> ${minExpected}-${parsed.sides}</div>`;
+                html += `</div>`;
+
+                if (parsed.count === 1) {
+                    html += `<h4>Distribuição dos Resultados:</h4>`;
+                    html += `<div style="font-family: monospace;">`;
+                    for (let i = 1; i <= parsed.sides; i++) {
+                        const count = distribution[i];
+                        const percentage = (count / rolls * 100).toFixed(1);
+                        const bar = '█'.repeat(Math.floor(count / 2));
+                        const isInRange = i >= minExpected;
+                        const color = isInRange ? '#34a853' : '#ea4335';
+                        html += `<div style="color: ${color}">`;
+                        html += `${i.toString().padStart(2)}: ${bar} ${count} (${percentage}%)`;
+                        html += `</div>`;
+                    }
+                    html += `</div>`;
+                }
+
+                if (successRate === '100.0') {
+                    html += `<p class="success">✅ PERFEITO! 100% dos resultados na faixa esperada!</p>`;
+                } else if (successRate >= '95.0') {
+                    html += `<p class="success">✅ MUITO BOM! ${successRate}% na faixa esperada!</p>`;
+                } else {
+                    html += `<p class="fail">❌ PROBLEMA! Apenas ${successRate}% na faixa esperada!</p>`;
+                }
+
+                resultsDiv.innerHTML = html;
+            }, 100);
+        }
+
+        function testAdvantage(diceFormat, rolls) {
+            const resultsDiv = document.getElementById('advantage-results');
+            const parsed = rollEngine.parser.parse(diceFormat);
+            
+            if (!parsed) {
+                resultsDiv.innerHTML = '<span class="fail">❌ Formato inválido!</span>';
+                return;
+            }
+
+            resultsDiv.innerHTML = '<p>Testando vantagem... aguarde...</p>';
+
+            setTimeout(() => {
+                const minExpected = Math.ceil(parsed.sides * 0.7);
+                let successCount = 0;
+                let failCount = 0;
+                const allResults = [];
+
+                // Faz as rolagens com vantagem
+                for (let i = 0; i < rolls; i++) {
+                    const result = rollEngine.roll(diceFormat, 'advantage', true);
+                    allResults.push(result);
+                    
+                    // Verifica se o resultado final está na faixa
+                    const finalInRange = result.selectedRolls.every(roll => roll >= minExpected);
+                    
+                    // Verifica se TODOS os dados rolados (incluindo os descartados) estão na faixa
+                    let allDiceInRange = true;
+                    if (result.rolls && Array.isArray(result.rolls[0])) {
+                        // Vantagem/Desvantagem - verifica todos os pares
+                        result.rolls.forEach(pair => {
+                            pair.forEach(die => {
+                                if (die < minExpected) allDiceInRange = false;
+                            });
+                        });
+                    }
+                    
+                    if (finalInRange && allDiceInRange) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                }
+
+                const successRate = (successCount / rolls * 100).toFixed(1);
+                
+                let html = `<h3>Teste de ${rolls} rolagens: ${diceFormat} com VANTAGEM 🍀</h3>`;
+                html += `<div class="stats">`;
+                html += `<div class="stat-box"><strong>Sucessos:</strong> ${successCount}/${rolls}</div>`;
+                html += `<div class="stat-box"><strong>Falhas:</strong> ${failCount}/${rolls}</div>`;
+                html += `<div class="stat-box"><strong>Taxa de Sucesso:</strong> ${successRate}%</div>`;
+                html += `<div class="stat-box"><strong>Faixa Esperada:</strong> ${minExpected}-${parsed.sides}</div>`;
+                html += `</div>`;
+
+                // Mostra alguns exemplos
+                html += `<h4>Exemplos de Rolagens:</h4>`;
+                html += `<div style="font-family: monospace;">`;
+                for (let i = 0; i < Math.min(5, allResults.length); i++) {
+                    const r = allResults[i];
+                    if (r.rolls && Array.isArray(r.rolls[0])) {
+                        const pairs = r.rolls.map(p => `(${p[0]}, ${p[1]})`).join(', ');
+                        html += `<div>Rolagem ${i+1}: ${pairs} → Escolhido: [${r.selectedRolls.join(', ')}] = ${r.finalResult}</div>`;
+                    }
+                }
+                html += `</div>`;
+
+                if (successRate === '100.0') {
+                    html += `<p class="success">✅ PERFEITO! Todos os dados (incluindo os descartados) estão na faixa esperada!</p>`;
+                    html += `<p class="success">Isso significa que com Vantagem + Dado Sortudo, você SEMPRE tem dois resultados altos para escolher!</p>`;
+                } else {
+                    html += `<p class="fail">❌ PROBLEMA! Alguns dados caíram fora da faixa!</p>`;
+                }
+
+                resultsDiv.innerHTML = html;
+            }, 100);
+        }
+
+        function testDisadvantage(diceFormat, rolls) {
+            const resultsDiv = document.getElementById('advantage-results');
+            const parsed = rollEngine.parser.parse(diceFormat);
+            
+            if (!parsed) {
+                resultsDiv.innerHTML = '<span class="fail">❌ Formato inválido!</span>';
+                return;
+            }
+
+            resultsDiv.innerHTML = '<p>Testando desvantagem... aguarde...</p>';
+
+            setTimeout(() => {
+                const minExpected = Math.ceil(parsed.sides * 0.7);
+                let successCount = 0;
+                let failCount = 0;
+                const allResults = [];
+
+                // Faz as rolagens com desvantagem
+                for (let i = 0; i < rolls; i++) {
+                    const result = rollEngine.roll(diceFormat, 'disadvantage', true);
+                    allResults.push(result);
+                    
+                    // Verifica se o resultado final está na faixa
+                    const finalInRange = result.selectedRolls.every(roll => roll >= minExpected);
+                    
+                    // Verifica se TODOS os dados rolados (incluindo os descartados) estão na faixa
+                    let allDiceInRange = true;
+                    if (result.rolls && Array.isArray(result.rolls[0])) {
+                        // Vantagem/Desvantagem - verifica todos os pares
+                        result.rolls.forEach(pair => {
+                            pair.forEach(die => {
+                                if (die < minExpected) allDiceInRange = false;
+                            });
+                        });
+                    }
+                    
+                    if (finalInRange && allDiceInRange) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                }
+
+                const successRate = (successCount / rolls * 100).toFixed(1);
+                
+                let html = `<h3>Teste de ${rolls} rolagens: ${diceFormat} com DESVANTAGEM 🍀</h3>`;
+                html += `<div class="stats">`;
+                html += `<div class="stat-box"><strong>Sucessos:</strong> ${successCount}/${rolls}</div>`;
+                html += `<div class="stat-box"><strong>Falhas:</strong> ${failCount}/${rolls}</div>`;
+                html += `<div class="stat-box"><strong>Taxa de Sucesso:</strong> ${successRate}%</div>`;
+                html += `<div class="stat-box"><strong>Faixa Esperada:</strong> ${minExpected}-${parsed.sides}</div>`;
+                html += `</div>`;
+
+                // Mostra alguns exemplos
+                html += `<h4>Exemplos de Rolagens:</h4>`;
+                html += `<div style="font-family: monospace;">`;
+                for (let i = 0; i < Math.min(5, allResults.length); i++) {
+                    const r = allResults[i];
+                    if (r.rolls && Array.isArray(r.rolls[0])) {
+                        const pairs = r.rolls.map(p => `(${p[0]}, ${p[1]})`).join(', ');
+                        html += `<div>Rolagem ${i+1}: ${pairs} → Escolhido: [${r.selectedRolls.join(', ')}] = ${r.finalResult}</div>`;
+                    }
+                }
+                html += `</div>`;
+
+                if (successRate === '100.0') {
+                    html += `<p class="success">✅ INCRÍVEL! Mesmo com DESVANTAGEM, todos os resultados estão na faixa alta!</p>`;
+                    html += `<p class="success">Com Dado Sortudo, até a desvantagem te dá resultados bons! 😄</p>`;
+                } else {
+                    html += `<p class="fail">❌ PROBLEMA! Alguns dados caíram fora da faixa!</p>`;
+                }
+
+                resultsDiv.innerHTML = html;
+            }, 100);
+        }
+
+        // Teste automático ao carregar
+        window.addEventListener('load', () => {
+            console.log('🍀 Página de teste carregada!');
+            console.log('Clique nos botões para testar o dado sortudo.');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dice Roller</title>
+    <style>
+        body {
+            width: 350px;
+            min-height: 400px;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+        }
+        
+        .popup-container {
+            background: white;
+            border-radius: 8px;
+            margin: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .popup-header {
+            background: linear-gradient(135deg, #4285f4, #34a853);
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .popup-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .popup-content {
+            padding: 16px;
+        }
+        
+        .input-section {
+            margin-bottom: 16px;
+        }
+        
+        .input-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        #dice-format {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        #dice-format:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+        
+        .format-examples {
+            margin-top: 8px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .example {
+            background: #f1f3f4;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .example:hover {
+            background: #e8eaed;
+        }
+        
+        .roll-type-section {
+            margin-bottom: 16px;
+        }
+        
+        .roll-type-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .roll-type-buttons {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        
+        .roll-type-btn {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .roll-type-btn:hover {
+            border-color: #4285f4;
+        }
+        
+        .roll-type-btn.active {
+            background: #4285f4;
+            color: white;
+            border-color: #4285f4;
+        }
+        
+        .roll-type-explanation {
+            font-size: 11px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .animation-section {
+            margin-bottom: 16px;
+        }
+        
+        .animation-container {
+            height: 80px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            text-align: center;
+        }
+        
+        .dice-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .animation-placeholder p {
+            margin: 0;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .result-section {
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .result-section.hidden {
+            display: none;
+        }
+        
+        .result-display {
+            background: linear-gradient(135deg, #34a853, #4285f4);
+            color: white;
+            padding: 16px;
+            border-radius: 6px;
+        }
+        
+        .result-number {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        
+        .result-explanation {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .error-container {
+            min-height: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .dice-error-message {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            border-radius: 4px;
+            color: #c33;
+            padding: 8px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .popup-footer {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .security-status {
+            flex: 1;
+        }
+        
+        .security-status small {
+            color: #666;
+            font-size: 10px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .roll-button, .insert-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .roll-button {
+            background: #4285f4;
+            color: white;
+        }
+        
+        .roll-button:hover:not(:disabled) {
+            background: #3367d6;
+        }
+        
+        .roll-button:disabled {
+            background: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .insert-button {
+            background: #34a853;
+            color: white;
+        }
+        
+        .insert-button:hover:not(:disabled) {
+            background: #2d8f47;
+        }
+        
+        .insert-button:disabled {
+            background: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .insert-button.hidden, .copy-button.hidden {
+            display: none;
+        }
+        
+        .copy-button {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .copy-button:hover:not(:disabled) {
+            background: #f57c00;
+        }
+        
+        .copy-button:disabled {
+            background: #e0e0e0;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .dice-success-message {
+            background-color: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            color: #2e7d32;
+            padding: 8px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .auto-insert-section {
+            margin-bottom: 16px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 12px;
+            color: #333;
+            user-select: none;
+        }
+        
+        .checkbox-container input {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        
+        .checkbox-container:hover {
+            color: #4285f4;
+        }
+        
+        .gemini-link {
+            display: block;
+            text-align: center;
+            margin: 12px 0;
+            padding: 8px;
+            background: #e8f0fe;
+            color: #1a73e8;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .gemini-link:hover {
+            background: #d2e3fc;
+        }
+    </style>
+</head>
+<body>
+    <div class="popup-container">
+        <div class="popup-header">
+            <h3>🎲 Dice Roller</h3>
+        </div>
+        
+        <div class="popup-content">
+            <a href="https://gemini.google.com" target="_blank" class="gemini-link">
+                🚀 Abrir Gemini Chat para usar o rolador
+            </a>
+            
+            <div class="input-section">
+                <label for="dice-format">Formato dos Dados:</label>
+                <input type="text" id="dice-format" placeholder="Ex: 2d6, 1d20+5" autocomplete="off">
+                <div class="format-examples">
+                    <span class="example" data-format="1d20">1d20</span>
+                    <span class="example" data-format="2d6">2d6</span>
+                    <span class="example" data-format="1d8+3">1d8+3</span>
+                    <span class="example" data-format="4d6">4d6</span>
+                </div>
+            </div>
+
+            <div class="roll-type-section">
+                <label>Tipo de Rolagem:</label>
+                <div class="roll-type-buttons">
+                    <button class="roll-type-btn active" data-type="normal">Normal</button>
+                    <button class="roll-type-btn" data-type="advantage">Vantagem</button>
+                    <button class="roll-type-btn" data-type="disadvantage">Desvantagem</button>
+                </div>
+                <div class="roll-type-explanation">
+                    <span id="roll-type-desc">Rolagem normal</span>
+                </div>
+            </div>
+
+            <div class="auto-insert-section">
+                <label class="checkbox-container">
+                    <input type="checkbox" id="auto-insert" checked>
+                    <span class="checkmark"></span>
+                    Inserir automaticamente no Gemini e enviar
+                </label>
+            </div>
+
+            <div class="animation-section">
+                <div id="dice-animation-container" class="animation-container">
+                    <div class="animation-placeholder">
+                        <div class="dice-icon">🎲</div>
+                        <p>Clique em "Rolar" para testar</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section hidden">
+                <div class="result-display">
+                    <div class="result-number" id="result-number">0</div>
+                    <div class="result-explanation" id="result-explanation"></div>
+                </div>
+            </div>
+
+            <div class="error-container" id="error-container">
+                
+            </div>
+        </div>
+
+        <div class="popup-footer">
+            <div class="security-status" id="security-status">
+                <small>Pronto para rolar!</small>
+            </div>
+            <div class="action-buttons">
+                <button id="roll-dice" class="roll-button" disabled>Rolar Dados</button>
+                <button id="insert-gemini" class="insert-button hidden" disabled>Inserir no Gemini</button>
+                <button id="copy-result" class="copy-button hidden" disabled>Copiar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../utils/dice-parser.js"></script>
+    <script src="../utils/random-generator.js"></script>
+    <script src="../utils/error-handler.js"></script>
+    <script src="../utils/roll-engine.js"></script>
+    <script src="extension-popup.js"></script>
+</body>
+</html>

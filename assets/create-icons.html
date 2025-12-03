@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dice Roller Extension - Icon Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .icon-preview {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .icon-canvas {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .download-btn {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .download-btn:hover {
+            background: #3367d6;
+        }
+        .generate-all-btn {
+            background: #34a853;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 0;
+        }
+        .generate-all-btn:hover {
+            background: #2d8f47;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 Dice Roller Extension - Icon Generator</h1>
+        <p>Esta página gera os ícones necessários para a extensão em diferentes tamanhos.</p>
+        
+        <button class="generate-all-btn" onclick="generateAllIcons()">Gerar Todos os Ícones</button>
+        
+        <div id="icon-previews"></div>
+        
+        <h2>Instruções:</h2>
+        <ol>
+            <li>Clique em "Gerar Todos os Ícones" para criar os ícones</li>
+            <li>Clique em "Download" em cada ícone para salvá-lo</li>
+            <li>Salve os arquivos na pasta <code>assets/icons/</code> com os nomes corretos</li>
+            <li>Nomes dos arquivos: dice-16.png, dice-32.png, dice-48.png, dice-128.png</li>
+        </ol>
+    </div>
+
+    <script>
+        const iconSizes = [16, 32, 48, 128];
+        
+        function generateAllIcons() {
+            const previewContainer = document.getElementById('icon-previews');
+            previewContainer.innerHTML = '';
+            
+            iconSizes.forEach(size => {
+                const iconPreview = createIconPreview(size);
+                previewContainer.appendChild(iconPreview);
+            });
+        }
+        
+        function createIconPreview(size) {
+            const preview = document.createElement('div');
+            preview.className = 'icon-preview';
+            
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            canvas.className = 'icon-canvas';
+            
+            const ctx = canvas.getContext('2d');
+            drawDiceIcon(ctx, size);
+            
+            const downloadBtn = document.createElement('button');
+            downloadBtn.className = 'download-btn';
+            downloadBtn.textContent = 'Download';
+            downloadBtn.onclick = () => downloadIcon(canvas, `dice-${size}.png`);
+            
+            preview.innerHTML = `
+                <div><strong>${size}x${size}px</strong></div>
+            `;
+            preview.appendChild(canvas);
+            preview.appendChild(document.createElement('br'));
+            preview.appendChild(downloadBtn);
+            
+            return preview;
+        }
+        
+        function drawDiceIcon(ctx, size) {
+            // Clear canvas
+            ctx.clearRect(0, 0, size, size);
+            
+            // Calculate dimensions
+            const padding = Math.max(2, size * 0.1);
+            const diceSize = size - (padding * 2);
+            const cornerRadius = Math.max(2, size * 0.1);
+            
+            // Draw background circle
+            ctx.fillStyle = '#4285f4';
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2 - 1, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw dice
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = Math.max(1, size * 0.02);
+            
+            // Draw rounded rectangle for dice
+            const diceX = padding;
+            const diceY = padding;
+            const diceWidth = diceSize * 0.7;
+            const diceHeight = diceSize * 0.7;
+            const diceCornerRadius = Math.max(1, size * 0.05);
+            
+            drawRoundedRect(ctx, diceX, diceY, diceWidth, diceHeight, diceCornerRadius);
+            ctx.fill();
+            
+            // Draw dots based on size
+            ctx.fillStyle = '#4285f4';
+            const dotSize = Math.max(1, size * 0.04);
+            const dotSpacing = diceWidth / 4;
+            
+            if (size >= 32) {
+                // Draw 5 dots (like on a die face showing 5)
+                const centerX = diceX + diceWidth / 2;
+                const centerY = diceY + diceHeight / 2;
+                
+                // Center dot
+                drawDot(ctx, centerX, centerY, dotSize);
+                
+                // Corner dots
+                drawDot(ctx, diceX + dotSpacing, diceY + dotSpacing, dotSize);
+                drawDot(ctx, diceX + diceWidth - dotSpacing, diceY + dotSpacing, dotSize);
+                drawDot(ctx, diceX + dotSpacing, diceY + diceHeight - dotSpacing, dotSize);
+                drawDot(ctx, diceX + diceWidth - dotSpacing, diceY + diceHeight - dotSpacing, dotSize);
+            } else {
+                // For smaller sizes, just draw 3 dots
+                const centerX = diceX + diceWidth / 2;
+                const centerY = diceY + diceHeight / 2;
+                
+                drawDot(ctx, centerX - dotSpacing / 2, centerY - dotSpacing / 2, dotSize);
+                drawDot(ctx, centerX, centerY, dotSize);
+                drawDot(ctx, centerX + dotSpacing / 2, centerY + dotSpacing / 2, dotSize);
+            }
+        }
+        
+        function drawRoundedRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        function drawDot(ctx, x, y, size) {
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        function downloadIcon(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Generate icons on page load
+        window.addEventListener('load', () => {
+            generateAllIcons();
+        });
+    </script>
+</body>
+</html>

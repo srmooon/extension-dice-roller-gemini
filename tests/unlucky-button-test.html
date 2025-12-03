@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Botão Unlucky - Mutuamente Exclusivo</title>
+    <link rel="stylesheet" href="../popup/dice-popup.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .instructions {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 5px 0;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎲 Teste: Lucky vs Unlucky</h1>
+    
+    <div class="test-container">
+        <div class="instructions">
+            <h3>📋 Instruções de Teste:</h3>
+            <ul>
+                <li>Marque o checkbox "Dado Sortudo"</li>
+                <li>Depois marque o "Dado Azarado"</li>
+                <li>O "Dado Sortudo" deve desmarcar automaticamente</li>
+                <li>Faça o inverso para testar o outro lado</li>
+            </ul>
+        </div>
+        
+        <div class="lucky-dice-section">
+            <label class="lucky-checkbox-label">
+                <input type="checkbox" id="lucky-dice" class="lucky-checkbox">
+                <span class="checkmark"></span>
+                🍀 Dado Sortudo (70% superiores)
+            </label>
+            <div class="lucky-explanation">
+                <small>Garante resultados nos 70% superiores do dado</small>
+            </div>
+        </div>
+
+        <div class="unlucky-dice-section">
+            <label class="unlucky-checkbox-label">
+                <input type="checkbox" id="unlucky-dice" class="unlucky-checkbox">
+                <span class="checkmark-unlucky"></span>
+                💀 Dado Azarado (30% inferiores)
+            </label>
+            <div class="unlucky-explanation">
+                <small>Garante resultados nos 30% inferiores do dado</small>
+            </div>
+        </div>
+        
+        <div id="status" class="status info">
+            <strong>Status:</strong> Nenhum checkbox marcado
+        </div>
+    </div>
+
+    <script>
+        const luckyCheckbox = document.getElementById('lucky-dice');
+        const unluckyCheckbox = document.getElementById('unlucky-dice');
+        const statusDiv = document.getElementById('status');
+        
+        function updateStatus() {
+            const luckyChecked = luckyCheckbox.checked;
+            const unluckyChecked = unluckyCheckbox.checked;
+            
+            if (luckyChecked && unluckyChecked) {
+                statusDiv.className = 'status';
+                statusDiv.style.background = '#f8d7da';
+                statusDiv.style.color = '#721c24';
+                statusDiv.style.border = '1px solid #f5c6cb';
+                statusDiv.innerHTML = '<strong>❌ ERRO:</strong> Ambos estão marcados! Isso não deveria acontecer.';
+            } else if (luckyChecked) {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '<strong>✅ Lucky Ativo:</strong> Apenas o Dado Sortudo está marcado';
+            } else if (unluckyChecked) {
+                statusDiv.className = 'status success';
+                statusDiv.innerHTML = '<strong>✅ Unlucky Ativo:</strong> Apenas o Dado Azarado está marcado';
+            } else {
+                statusDiv.className = 'status info';
+                statusDiv.innerHTML = '<strong>Status:</strong> Nenhum checkbox marcado';
+            }
+        }
+        
+        // Lógica mutuamente exclusiva
+        luckyCheckbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                unluckyCheckbox.checked = false;
+            }
+            updateStatus();
+        });
+        
+        unluckyCheckbox.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                luckyCheckbox.checked = false;
+            }
+            updateStatus();
+        });
+        
+        // Atualiza status inicial
+        updateStatus();
+    </script>
+</body>
+</html>
