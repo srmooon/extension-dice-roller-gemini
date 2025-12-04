@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Dice Roller for Gemini Chat",
-  "version": "1.0.0",
-  "description": "Adiciona funcionalidade de rolagem de dados ao Gemini Chat com animações 3D",
+  "name": "Dice Roller for Gemini & AI Studio",
+  "version": "2.0.0",
+  "description": "Advanced dice rolling for Google Gemini Chat and AI Studio with 8 simultaneous dice, Player/NPC system, and Lucky/Unlucky modifiers",
   
   "permissions": [
     "activeTab",

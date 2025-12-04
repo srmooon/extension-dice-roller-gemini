@@ -2,7 +2,7 @@
 
 [Português](README.pt-BR.md) | **English**
 
-A Chrome extension that adds advanced dice rolling functionality to Google Gemini Chat with beautiful animations and RPG-focused features.
+A Chrome extension that adds advanced dice rolling functionality to Google Gemini Chat and AI Studio with beautiful animations and RPG-focused features.
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -65,7 +65,7 @@ A Chrome extension that adds advanced dice rolling functionality to Google Gemin
    - Select the extension folder
 
 3. **Start Using**
-   - Go to [gemini.google.com](https://gemini.google.com)
+   - Go to [gemini.google.com](https://gemini.google.com) or [aistudio.google.com](https://aistudio.google.com)
    - Look for the 🎲 Dice button next to the chat input
    - Click and start rolling!
 
@@ -130,6 +130,10 @@ A Chrome extension that adds advanced dice rolling functionality to Google Gemin
 - **Primary**: Web Crypto API (cryptographically secure)
 - **Fallback**: Math.random() (if Crypto API unavailable)
 - **Lucky/Unlucky**: Re-roll mechanism for guaranteed ranges
+
+### Supported Platforms
+- **Google Gemini Chat**: gemini.google.com
+- **Google AI Studio**: aistudio.google.com
 
 ### Browser Compatibility
 - Chrome 88+

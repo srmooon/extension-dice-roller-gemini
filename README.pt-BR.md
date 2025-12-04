@@ -2,7 +2,7 @@
 
 **Português** | [English](README.md)
 
-Uma extensão do Chrome que adiciona funcionalidade avançada de rolagem de dados ao Google Gemini Chat com animações bonitas e recursos focados em RPG.
+Uma extensão do Chrome que adiciona funcionalidade avançada de rolagem de dados ao Google Gemini Chat e AI Studio com animações bonitas e recursos focados em RPG.
 
 ![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -65,7 +65,7 @@ Uma extensão do Chrome que adiciona funcionalidade avançada de rolagem de dado
    - Selecione a pasta da extensão
 
 3. **Comece a Usar**
-   - Vá para [gemini.google.com](https://gemini.google.com)
+   - Vá para [gemini.google.com](https://gemini.google.com) ou [aistudio.google.com](https://aistudio.google.com)
    - Procure pelo botão 🎲 Dados ao lado da entrada de chat
    - Clique e comece a rolar!
 
@@ -130,6 +130,10 @@ Uma extensão do Chrome que adiciona funcionalidade avançada de rolagem de dado
 - **Primário**: Web Crypto API (criptograficamente seguro)
 - **Fallback**: Math.random() (se Crypto API indisponível)
 - **Sortudo/Azarado**: Mecanismo de re-rolagem para faixas garantidas
+
+### Plataformas Suportadas
+- **Google Gemini Chat**: gemini.google.com
+- **Google AI Studio**: aistudio.google.com
 
 ### Compatibilidade de Navegadores
 - Chrome 88+
