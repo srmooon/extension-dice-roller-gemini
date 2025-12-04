@@ -11,7 +11,10 @@
   
   "content_scripts": [
     {
-      "matches": ["https://gemini.google.com/*"],
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://aistudio.google.com/*"
+      ],
       "js": [
         "utils/i18n.js",
         "utils/dice-parser.js",
@@ -40,7 +43,10 @@
         "assets/icons/*",
         "assets/textures/*"
       ],
-      "matches": ["https://gemini.google.com/*"]
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://aistudio.google.com/*"
+      ]
     }
   ],
   

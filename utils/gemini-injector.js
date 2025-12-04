@@ -12,6 +12,7 @@ class GeminiInjector {
     findTextInput() {
         
         const selectors = [
+            // Gemini Chat
             '.ql-editor[contenteditable="true"]',
             'rich-textarea .ql-editor',
             '[data-placeholder*="Ask Gemini"]',
@@ -21,7 +22,13 @@ class GeminiInjector {
             '[class*="ql-editor"]',
             'textarea[placeholder*="Ask"]',
             '[aria-label*="prompt"]',
-            '[aria-label*="Enter"]'
+            '[aria-label*="Enter"]',
+            // AI Studio
+            'ms-autosize-textarea textarea',
+            'textarea[placeholder*="Start typing"]',
+            'textarea.textarea',
+            'ms-text-chunk textarea',
+            '.text-input-wrapper textarea'
         ];
 
         for (const selector of selectors) {
@@ -64,6 +71,7 @@ class GeminiInjector {
     
     findToolboxDrawer() {
         const selectors = [
+            // Gemini Chat
             'toolbox-drawer .toolbox-drawer-container',
             '.toolbox-drawer-container',
             '[class*="toolbox-drawer"]',
@@ -71,7 +79,12 @@ class GeminiInjector {
             '.leading-actions-wrapper',
             '[class*="leading-actions"]',
             '[class*="toolbox"]',
-            '.uploader-button-container'
+            '.uploader-button-container',
+            // AI Studio
+            '.button-wrapper',
+            '.prompt-input-wrapper-container .button-wrapper',
+            'ms-add-chunk-menu',
+            '.text-wrapper'
         ];
 
         for (const selector of selectors) {
@@ -232,7 +245,20 @@ class GeminiInjector {
     }
 
     
+    isAIStudio() {
+        return window.location.hostname === 'aistudio.google.com';
+    }
+
+    
     createDiceButton() {
+        if (this.isAIStudio()) {
+            return this.createAIStudioButton();
+        }
+        return this.createGeminiButton();
+    }
+
+    
+    createGeminiButton() {
         const button = document.createElement('toolbox-drawer-item');
         button.className = 'mat-mdc-tooltip-trigger toolbox-drawer-item-button ng-star-inserted dice-roller-button';
         button.setAttribute('_nghost-ng-c3522974133', '');
@@ -265,6 +291,33 @@ class GeminiInjector {
     }
 
     
+    createAIStudioButton() {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'button-wrapper dice-roller-button ng-star-inserted';
+        wrapper.style.cssText = 'display: flex; align-items: center;';
+
+        const button = document.createElement('button');
+        button.className = 'mat-mdc-tooltip-trigger ms-button-borderless ms-button-icon';
+        button.setAttribute('ms-button', '');
+        button.setAttribute('variant', 'icon-borderless');
+        button.setAttribute('aria-label', 'Roll dice');
+        button.setAttribute('mattooltipposition', 'above');
+        button.setAttribute('aria-disabled', 'false');
+        button.style.cssText = 'background: transparent; border: none; cursor: pointer; padding: 8px;';
+
+        const icon = document.createElement('span');
+        icon.className = 'material-symbols-outlined notranslate ms-button-icon-symbol';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.style.cssText = 'font-size: 24px;';
+        icon.textContent = '🎲';
+
+        button.appendChild(icon);
+        wrapper.appendChild(button);
+
+        return wrapper;
+    }
+
+    
     injectDiceButton(clickHandler) {
         if (this.isInjected && this.diceButton && this.diceButton.parentNode) {
             return true; 
@@ -272,7 +325,7 @@ class GeminiInjector {
 
         const toolboxDrawer = this.findToolboxDrawer();
         if (!toolboxDrawer) {
-            console.log('Toolbox drawer not found, retrying...');
+            console.log('🎲 Toolbox drawer not found, retrying...');
             return false;
         }
 
@@ -285,20 +338,30 @@ class GeminiInjector {
                 button.addEventListener('click', clickHandler);
             }
 
-            
-            const existingButtons = toolboxDrawer.querySelectorAll('toolbox-drawer-item');
-            if (existingButtons.length > 0) {
-                const lastButton = existingButtons[existingButtons.length - 1];
-                lastButton.parentNode.insertBefore(this.diceButton, lastButton.nextSibling);
+            if (this.isAIStudio()) {
+                // AI Studio: inserir antes do botão de adicionar (add_circle)
+                const addButton = toolboxDrawer.querySelector('ms-add-chunk-menu');
+                if (addButton && addButton.parentNode) {
+                    addButton.parentNode.insertBefore(this.diceButton, addButton);
+                } else {
+                    toolboxDrawer.appendChild(this.diceButton);
+                }
             } else {
-                toolboxDrawer.appendChild(this.diceButton);
+                // Gemini Chat: inserir após os botões existentes
+                const existingButtons = toolboxDrawer.querySelectorAll('toolbox-drawer-item');
+                if (existingButtons.length > 0) {
+                    const lastButton = existingButtons[existingButtons.length - 1];
+                    lastButton.parentNode.insertBefore(this.diceButton, lastButton.nextSibling);
+                } else {
+                    toolboxDrawer.appendChild(this.diceButton);
+                }
             }
 
             this.isInjected = true;
-            console.log('Dice button injected successfully');
+            console.log('🎲 Dice button injected successfully');
             return true;
         } catch (error) {
-            console.error('Error injecting dice button:', error);
+            console.error('🎲 Error injecting dice button:', error);
             return false;
         }
     }
@@ -801,6 +864,7 @@ class GeminiInjector {
     
     findSendButton() {
         const selectors = [
+            // Gemini Chat
             'button[aria-label*="Send"]',
             'button[aria-label*="send"]',
             'button[aria-label*="Enviar"]',
@@ -808,7 +872,12 @@ class GeminiInjector {
             '[class*="send-button"]',
             'button[jslog*="173899"]', 
             'button .mat-icon[fonticon="send"]',
-            'button:has(.mat-icon[fonticon="send"])'
+            'button:has(.mat-icon[fonticon="send"])',
+            // AI Studio
+            'ms-run-button button',
+            'button.run-button',
+            'button[aria-label*="Run"]',
+            'button .mat-icon:has-text("arrow_upward_alt")'
         ];
 
         for (const selector of selectors) {
