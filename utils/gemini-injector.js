@@ -70,8 +70,17 @@ class GeminiInjector {
 
     
     findToolboxDrawer() {
+        // AI Studio tem estrutura diferente
+        if (this.isAIStudio()) {
+            const container = document.querySelector('.prompt-input-wrapper-container');
+            if (container) {
+                console.log('🎲 Found AI Studio container');
+                return container;
+            }
+        }
+        
+        // Gemini Chat
         const selectors = [
-            // Gemini Chat
             'toolbox-drawer .toolbox-drawer-container',
             '.toolbox-drawer-container',
             '[class*="toolbox-drawer"]',
@@ -79,12 +88,7 @@ class GeminiInjector {
             '.leading-actions-wrapper',
             '[class*="leading-actions"]',
             '[class*="toolbox"]',
-            '.uploader-button-container',
-            // AI Studio
-            '.button-wrapper',
-            '.prompt-input-wrapper-container .button-wrapper',
-            'ms-add-chunk-menu',
-            '.text-wrapper'
+            '.uploader-button-container'
         ];
 
         for (const selector of selectors) {
@@ -102,10 +106,24 @@ class GeminiInjector {
 
     
     isValidToolboxDrawer(element) {
-        return element && 
-               (element.classList.contains('toolbox-drawer-container') ||
-                element.querySelector('toolbox-drawer-item') ||
-                element.querySelector('[class*="toolbox-drawer-item"]'));
+        if (!element) return false;
+        
+        // Gemini Chat
+        if (element.classList.contains('toolbox-drawer-container') ||
+            element.querySelector('toolbox-drawer-item') ||
+            element.querySelector('[class*="toolbox-drawer-item"]')) {
+            return true;
+        }
+        
+        // AI Studio
+        if (this.isAIStudio()) {
+            return element.classList.contains('button-wrapper') ||
+                   element.classList.contains('prompt-input-wrapper-container') ||
+                   element.querySelector('ms-add-chunk-menu') ||
+                   element.querySelector('ms-run-button');
+        }
+        
+        return false;
     }
 
     
@@ -341,10 +359,20 @@ class GeminiInjector {
             if (this.isAIStudio()) {
                 // AI Studio: inserir antes do botão de adicionar (add_circle)
                 const addButton = toolboxDrawer.querySelector('ms-add-chunk-menu');
-                if (addButton && addButton.parentNode) {
-                    addButton.parentNode.insertBefore(this.diceButton, addButton);
+                if (addButton) {
+                    // Inserir antes do botão de adicionar
+                    addButton.parentElement.insertBefore(this.diceButton, addButton);
+                    console.log('🎲 Inserted before add button in AI Studio');
                 } else {
-                    toolboxDrawer.appendChild(this.diceButton);
+                    // Fallback: inserir no container
+                    const buttonWrapper = toolboxDrawer.querySelector('.button-wrapper');
+                    if (buttonWrapper && buttonWrapper.parentElement) {
+                        buttonWrapper.parentElement.insertBefore(this.diceButton, buttonWrapper);
+                        console.log('🎲 Inserted before button wrapper in AI Studio');
+                    } else {
+                        toolboxDrawer.appendChild(this.diceButton);
+                        console.log('🎲 Appended to container in AI Studio');
+                    }
                 }
             } else {
                 // Gemini Chat: inserir após os botões existentes

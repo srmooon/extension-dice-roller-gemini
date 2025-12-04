@@ -67,27 +67,31 @@ class DiceRollerExtension {
     async waitForGeminiReady() {
         return new Promise((resolve, reject) => {
             const checkReady = () => {
-                
+                // Verifica se está no Gemini Chat ou AI Studio
                 const isGeminiPage = window.location.hostname === 'gemini.google.com' && 
                                    (window.location.pathname.includes('/app') || 
                                     window.location.pathname === '/' ||
                                     window.location.pathname.startsWith('/u/'));
                 
-                if (!isGeminiPage) {
-                    console.log('🎲 Not on a Gemini chat page, skipping injection');
+                const isAIStudio = window.location.hostname === 'aistudio.google.com';
+                
+                if (!isGeminiPage && !isAIStudio) {
+                    console.log('🎲 Not on a Gemini or AI Studio page, skipping injection');
                     resolve(); 
                     return;
                 }
                 
+                console.log(`🎲 Detected platform: ${isAIStudio ? 'AI Studio' : 'Gemini Chat'}`);
+                
                 if (this.geminiInjector.isGeminiReady()) {
-                    console.log('🎲 Gemini interface ready');
+                    console.log('🎲 Interface ready');
                     resolve();
                 } else if (this.retryCount < this.maxRetries) {
                     this.retryCount++;
-                    console.log(`🎲 Waiting for Gemini interface... (${this.retryCount}/${this.maxRetries})`);
+                    console.log(`🎲 Waiting for interface... (${this.retryCount}/${this.maxRetries})`);
                     setTimeout(checkReady, 1000);
                 } else {
-                    console.log('🎲 Gemini interface not ready, will try fallback methods');
+                    console.log('🎲 Interface not ready, will try fallback methods');
                     resolve(); 
                 }
             };
