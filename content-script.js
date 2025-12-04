@@ -314,26 +314,29 @@ if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage)
                 if (success && request.autoSend) {
                     setTimeout(() => {
                         try {
+                            const isAIStudio = window.location.hostname === 'aistudio.google.com';
                             
                             const sendButton = geminiInjector.findSendButton();
-                            if (sendButton) {
+                            if (sendButton && !sendButton.disabled) {
                                 sendButton.click();
-                                console.log('🎲 Message sent automatically');
+                                console.log('🎲 Message sent automatically via button');
                             } else {
-                                console.warn('🎲 Send button not found, trying Enter key');
+                                console.warn('🎲 Send button not found or disabled, trying keyboard shortcut');
                                 
                                 const textInput = geminiInjector.findTextInput();
                                 if (textInput) {
+                                    // AI Studio usa Ctrl+Enter, Gemini usa Enter
                                     const enterEvent = new KeyboardEvent('keydown', {
                                         key: 'Enter',
                                         code: 'Enter',
                                         keyCode: 13,
                                         which: 13,
+                                        ctrlKey: isAIStudio, // Ctrl+Enter apenas no AI Studio
                                         bubbles: true,
                                         cancelable: true
                                     });
                                     textInput.dispatchEvent(enterEvent);
-                                    console.log('🎲 Enter key pressed');
+                                    console.log(`🎲 ${isAIStudio ? 'Ctrl+Enter' : 'Enter'} key pressed`);
                                 }
                             }
                         } catch (sendError) {
