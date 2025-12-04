@@ -58,6 +58,14 @@ class DicePopup {
                     </div>
                     
                     <div class="popup-content">
+                        <div class="auto-insert-section">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="auto-insert" checked>
+                                <span class="checkmark"></span>
+                                Inserir automaticamente no chat e enviar
+                            </label>
+                        </div>
+
                         <!-- SEÇÃO PLAYER -->
                         <div class="category-section">
                             <h3 class="category-title">👤 PLAYER</h3>
@@ -254,14 +262,6 @@ class DicePopup {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="auto-insert-section">
-                            <label class="checkbox-container">
-                                <input type="checkbox" id="auto-insert" checked>
-                                <span class="checkmark"></span>
-                                Inserir automaticamente no chat e enviar
-                            </label>
                         </div>
 
                         <div class="language-section">
