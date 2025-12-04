@@ -104,7 +104,7 @@ class RandomGenerator {
         let maxUnluckyResult;
         
         if (sides === 6) {
-            maxUnluckyResult = 3; 
+            maxUnluckyResult = 4; // Customização local: d6 azarado rola 1-4
         } else {
             maxUnluckyResult = Math.ceil(sides * 0.3); 
         }
